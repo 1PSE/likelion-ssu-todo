@@ -1,5 +1,7 @@
 package likelion.todo.domain.member.controller;
 
+import likelion.todo.domain.member.dto.MemberLoginRequestDTO;
+import likelion.todo.domain.member.dto.MemberLoginResponseDTO;
 import likelion.todo.domain.member.dto.MemberRegisterRequestDTO;
 import likelion.todo.domain.member.dto.MemberRegisterResponseDTO;
 import likelion.todo.domain.member.service.MemberService;
@@ -17,9 +19,15 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    // 회원가입 API
     @PostMapping("/register")
     public ResponseEntity<MemberRegisterResponseDTO> register(@RequestBody MemberRegisterRequestDTO req) {
         return ResponseEntity.ok(memberService.registerMember(req));
     }
 
+    // 로그인 API
+    @PostMapping("/login")
+    public ResponseEntity<MemberLoginResponseDTO> login(@RequestBody MemberLoginRequestDTO req) {
+        return ResponseEntity.ok(memberService.loginMember(req));
+    }
 }

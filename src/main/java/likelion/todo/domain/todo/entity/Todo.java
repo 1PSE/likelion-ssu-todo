@@ -25,22 +25,41 @@ public class Todo extends BaseEntity {
     @Column
     private LocalDateTime date;
 
-    @Column(name = "is checked")
+    @Column(name = "is_checked")
     private boolean isChecked;
 
     @Column(length = 20)
     private String emoji;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member id")
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @Builder
-    public Todo(String content, LocalDateTime date, boolean isChecked, String emoji, Member member) {
+    public Todo(
+            String content,
+            LocalDateTime date,
+            boolean isChecked,
+            String emoji,
+            Member member
+    ) {
         this.content = content;
         this.date = date;
         this.isChecked = isChecked;
         this.emoji = emoji;
         this.member = member;
+    }
+
+    public void update(String content, LocalDateTime date) {
+        this.content = content;
+        this.date = date;
+    }
+
+    public void updateEmoji(String emoji) {
+        this.emoji = emoji;
+    }
+
+    public void toggleCheck() {
+        this.isChecked = !this.isChecked;
     }
 }

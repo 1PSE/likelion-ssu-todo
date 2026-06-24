@@ -1,6 +1,7 @@
 package likelion.todo.domain.member.service;
 
 import likelion.todo.domain.member.dto.MemberLoginRequestDTO;
+import likelion.todo.domain.member.dto.MemberLoginResponseDTO;
 import likelion.todo.domain.member.dto.MemberRegisterRequestDTO;
 import likelion.todo.domain.member.dto.MemberRegisterResponseDTO;
 import likelion.todo.domain.member.entity.Member;
@@ -18,7 +19,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
-    @Transactional
+    // 회원가입
     public MemberRegisterResponseDTO registerMember(MemberRegisterRequestDTO req) {
         if (memberRepository.findByUsername(req.username()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 존재하는 아이디입니다.");
@@ -32,5 +33,20 @@ public class MemberService {
         memberRepository.save(member);
 
         return new MemberRegisterResponseDTO(member.getId());
+    }
+
+    // 로그인
+    @Transactional(readOnly = true)
+    public MemberLoginResponseDTO loginMember(MemberLoginRequestDTO req) {
+        // 유저네임 존재 여부 확인 (404 Not Found)
+        Member member = memberRepository.findByUsername(req.username())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "멤버를 찾을 수 없습니다."));
+
+        // 비밀번호 일치 여부 확인 (401 Unauthorized)
+        if (!member.getPassword().equals(req.password())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
+        }
+
+        return new MemberLoginResponseDTO(member.getId());
     }
 }
